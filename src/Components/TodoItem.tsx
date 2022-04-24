@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Checkbox, IconButton, Label, Stack, TextField } from '@fluentui/react'
 import { deleteIcon, editIcon, saveIcon, stackTokens } from '../constants'
 import { TTodoItem } from '../Types/TodoItemType'
-import { ACTIONS, TDispatchAction } from '../Reducer/action'
+import { ACTIONS } from '../Reducer/action'
+import { TodoContext } from '../App'
 
 export type TTodoItemProps = {
     item: TTodoItem
-    dispatch: React.Dispatch<TDispatchAction>
 }
 
 const TodoItem = (props: TTodoItemProps) => {
-    const { dispatch } = props
     const { id, text, checked } = props.item
+    const todoContext = useContext(TodoContext)
     const [temporaryText, setText] = useState<string>(text)
     const [isChanging, setChanging] = useState<boolean>(false)
 
@@ -21,11 +21,11 @@ const TodoItem = (props: TTodoItemProps) => {
             text: text,
             checked: !checked
         }
-        dispatch({ type: ACTIONS.UPDATE_TODO, payload: todoItemData })
+        todoContext.dispatch({ type: ACTIONS.UPDATE_TODO, payload: todoItemData })
     }
 
     const handleOnClickDelete = () => {
-        dispatch({ type: ACTIONS.REMOVE_TODO, payload: id })
+        todoContext.dispatch({ type: ACTIONS.REMOVE_TODO, payload: id })
     }
 
     const doSave = () => {
@@ -34,7 +34,7 @@ const TodoItem = (props: TTodoItemProps) => {
             text: temporaryText,
             checked: checked
         }
-        dispatch({ type: ACTIONS.UPDATE_TODO, payload: todoItemData })
+        todoContext.dispatch({ type: ACTIONS.UPDATE_TODO, payload: todoItemData })
         setChanging(false)
     }
 
@@ -77,7 +77,7 @@ const TodoItem = (props: TTodoItemProps) => {
             <Stack.Item className='btn-icon' align='center' onClick={handleOnClickDelete}>
                 <IconButton iconProps={deleteIcon} aria-label="Emoji" />
             </Stack.Item>
-          </Stack>
+        </Stack>
     )
 }
 

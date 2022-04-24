@@ -1,12 +1,13 @@
-import React, { useReducer, useState } from 'react'
+import React, { createContext, useReducer, useState } from 'react'
 import { Stack, TextField, PrimaryButton, initializeIcons, Label } from '@fluentui/react'
 import Section from './Components/Section'
 import TodoItem from './Components/TodoItem'
-import { initialTodoList, stackTokens } from './constants'
+import { initialContextData, initialTodoList, stackTokens } from './constants'
 import { TTodoItem } from './Types/TodoItemType'
 import todoReducer from './Reducer/reducer'
 import { ACTIONS, TDispatchAction } from './Reducer/action'
 
+export const TodoContext = createContext(initialContextData)
 
 initializeIcons(undefined, { disableWarnings: true })
 
@@ -32,32 +33,39 @@ export const App: React.FunctionComponent = () => {
         }
     }
 
+    const todoContextData = {
+        state: todoList,
+        dispatch: dispatch
+    }
+
     return (
-        <Stack horizontalAlign="center" verticalAlign="center" verticalFill tokens={stackTokens}>
-            <Section>
-                <Stack>
-                    <Label>Todo list</Label>
-                </Stack>
-                <Stack horizontal tokens={stackTokens}>
-                    <TextField
-                        className='input-field'
-                        placeholder="What do you want to do today?"
-                        onChange={(e) => setTemporaryTodo((e.target as HTMLInputElement).value)}
-                        onKeyUp={handleOnInputKeyUp}
-                        value={temporaryTodo}
-                    />
-                <PrimaryButton text="Add" onClick={handleOnClickAdd} />
-                </Stack>
-                <div className='todo-list'>
-                {
-                    todoList.length > 0 ? 
-                    todoList.map((todoItem, index) => {
-                        return <TodoItem key={`index-key-${index}`} item={todoItem} dispatch={dispatch} />
-                    })
-                    : <div className='empty-todo'>Try starring some tasks to see them here.</div>
-                }
-                </div>
-            </Section>
-        </Stack>
+        <TodoContext.Provider value={todoContextData}>
+            <Stack horizontalAlign="center" verticalAlign="center" verticalFill tokens={stackTokens}>
+                <Section>
+                    <Stack>
+                        <Label>Todo list</Label>
+                    </Stack>
+                    <Stack horizontal tokens={stackTokens}>
+                        <TextField
+                            className='input-field'
+                            placeholder="What do you want to do today?"
+                            onChange={(e) => setTemporaryTodo((e.target as HTMLInputElement).value)}
+                            onKeyUp={handleOnInputKeyUp}
+                            value={temporaryTodo}
+                        />
+                    <PrimaryButton text="Add" onClick={handleOnClickAdd} />
+                    </Stack>
+                    <div className='todo-list'>
+                    {
+                        todoList.length > 0 ? 
+                        todoList.map((todoItem, index) => {
+                            return <TodoItem key={`index-key-${index}`} item={todoItem} />
+                        })
+                        : <div className='empty-todo'>Try starring some tasks to see them here.</div>
+                    }
+                    </div>
+                </Section>
+            </Stack>
+        </TodoContext.Provider>
     )
 }
