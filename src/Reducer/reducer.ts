@@ -1,5 +1,5 @@
 import { TTodoItem } from "../Types/TodoItemType"
-import { genId } from "../Utils/helper"
+import { genId, saveToLocalStorage } from "../Utils/helper"
 import { ACTIONS, TDispatchAction } from "./action"
 
 const todoReducer = (todoList: TTodoItem[], action: TDispatchAction): TTodoItem[] => {
@@ -19,19 +19,27 @@ const todoReducer = (todoList: TTodoItem[], action: TDispatchAction): TTodoItem[
                 checked: false
             }
             currentTodoList.push(newTodoItem)
+            // save to localStorage
+            saveToLocalStorage(currentTodoList)
             return currentTodoList
         case ACTIONS.UPDATE_TODO:
             const updateTodoItem = action.payload as TTodoItem
-            return todoList.map(item => {
+            const todoListUpdated = todoList.map(item => {
                 if (item.id === updateTodoItem.id) {
                     item.checked = updateTodoItem.checked
                     item.text = updateTodoItem.text
                 }
                 return item
             })
+            // save to localStorage
+            saveToLocalStorage(todoListUpdated)
+            return todoListUpdated
         case ACTIONS.REMOVE_TODO:
             const removeTodoId = action.payload as number
-            return todoList.filter(item => item.id !== removeTodoId)
+            const newTodoList = todoList.filter(item => item.id !== removeTodoId)
+            // save to localStorage
+            saveToLocalStorage(newTodoList)
+            return newTodoList
     }
     return todoList
 }

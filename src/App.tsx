@@ -11,7 +11,14 @@ import { ACTIONS, TDispatchAction } from './Reducer/action'
 initializeIcons(undefined, { disableWarnings: true })
 
 export const App: React.FunctionComponent = () => {
-    const [todoList, dispatch] = useReducer<(todoList: TTodoItem[], action: TDispatchAction) => TTodoItem[]>(todoReducer, initialTodoList)
+    // Get todolist from localStorage
+    const todoListRaw = localStorage.getItem('todoList')
+    let todoListParsed: TTodoItem[] = []
+    if (todoListRaw !== null) {
+        todoListParsed = JSON.parse(todoListRaw)
+    }
+
+    const [todoList, dispatch] = useReducer<(todoList: TTodoItem[], action: TDispatchAction) => TTodoItem[]>(todoReducer, todoListRaw !== null ? todoListParsed : initialTodoList)
     const [temporaryTodo, setTemporaryTodo] = useState<string>('')
 
     const handleOnClickAdd = () => {
