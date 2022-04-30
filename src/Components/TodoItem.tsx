@@ -59,12 +59,15 @@ const TodoItem = (props: TTodoItemProps) => {
             </Stack.Item>
             <Label
                 className={checked && !isChanging ? 'label-checked' : ''}
-                onClick={() => setChanging(true)}
+                onClick={() => {
+                    setText(text)
+                    setChanging(true)
+                }}
             >
                 {
                     isChanging ? 
                         <TextField 
-                            value={temporaryText} 
+                            value={temporaryText}
                             onChange={(e) => setText((e.target as HTMLInputElement).value)}
                             onKeyUp={handleOnInputKeyUp}
                         />
