@@ -49,6 +49,8 @@ const TodoItem = (props: TTodoItemProps) => {
     const handleOnInputKeyUp = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
             doSave()
+        } else if (e.key === 'Escape') {
+            setChanging(false)
         }
     }
 
